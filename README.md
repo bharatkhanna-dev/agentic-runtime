@@ -39,7 +39,7 @@ Three runtime variants evaluated on two workloads (Pair B), six cases each:
 | Variant | Task Success | ARS |
 |---|---:|---:|
 | Single-agent | 0.00 | 0.4458 |
-| Multi-agent baseline | 0.42 | 0.5474 |
+| Multi-agent baseline | 0.42 | 0.5473 |
 | Multi-agent guarded | 1.00 | 0.8545 |
 
 Run benchmarks:
@@ -60,7 +60,7 @@ pytest
 
 ## Status
 
-Research prototype. The repository contains:
+The repository contains:
 
 - Runtime-backed Pair B benchmark workloads (6 cases per workload including adversarial cases)
 - Benchmark variant comparisons across `single_agent`, `multi_agent_baseline`, and `multi_agent_guarded`
@@ -71,5 +71,7 @@ Research prototype. The repository contains:
 
 ## Research Paper
 
-The accompanying research paper is at `../docs/guardrails-as-runtime-policy.md` in the parent workspace.
+**Guardrails as Runtime Policy: An Orchestration Architecture and Evaluation Framework for Reliable Multi-Agent Systems**  
+Bharat Khanna, Independent Researcher, Phoenix, United States  
+Manuscript under review.
 
