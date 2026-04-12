@@ -69,6 +69,7 @@ class RunState(BaseModel):
     steps_taken: int = 0
     max_steps: int = 12
     total_tokens: int = 0
+    start_time: float | None = None
     nodes: dict[str, RuntimeNode] = Field(default_factory=dict)
     results: dict[str, NodeResult] = Field(default_factory=dict)
     guardrail_events: list[GuardrailDecision] = Field(default_factory=list)

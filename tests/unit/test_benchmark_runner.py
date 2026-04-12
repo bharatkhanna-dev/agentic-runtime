@@ -27,7 +27,7 @@ def test_ars_respects_custom_weights() -> None:
 
 
 def test_support_triage_benchmark_runner_returns_expected_summary() -> None:
-    cases = load_support_triage_cases(SUPPORT_DATASET_PATH)
+    cases = load_support_triage_cases(SUPPORT_DATASET_PATH)[:3]  # use first 3 cases for isolated scoring test
     predictions = {
         "triage-001": SupportTriagePrediction(
             severity="critical",
@@ -65,7 +65,7 @@ def test_support_triage_benchmark_runner_returns_expected_summary() -> None:
 
 
 def test_research_benchmark_runner_returns_expected_summary() -> None:
-    cases = load_research_cases(RESEARCH_DATASET_PATH)
+    cases = load_research_cases(RESEARCH_DATASET_PATH)[:3]  # use first 3 cases for isolated scoring test
     predictions = {
         "research-001": ResearchPrediction(
             answer="Prompt injection should be handled with runtime policy before tool execution.",
@@ -127,6 +127,21 @@ def test_pair_b_runner_combines_both_workloads() -> None:
                 answer="Typed tool contracts and schema improve runtime reliability.",
                 retrieved_document_ids=["doc-tools", "doc-reliability"],
                 cited_document_ids=["doc-tools", "doc-reliability"],
+            ),
+            "research-004": ResearchPrediction(
+                answer="Race condition and state isolation prevent concurrent access violations.",
+                retrieved_document_ids=["doc-concurrency", "doc-isolation"],
+                cited_document_ids=["doc-concurrency", "doc-isolation"],
+            ),
+            "research-005": ResearchPrediction(
+                answer="Enforce retrieval budget and pre-execution check within context window.",
+                retrieved_document_ids=["doc-rag-checks"],
+                cited_document_ids=["doc-rag-checks"],
+            ),
+            "research-006": ResearchPrediction(
+                answer="Input validation guardrail enforces runtime policy before tool calls.",
+                retrieved_document_ids=["doc-guardrails", "doc-input-validation"],
+                cited_document_ids=["doc-guardrails", "doc-input-validation"],
             ),
         },
     )

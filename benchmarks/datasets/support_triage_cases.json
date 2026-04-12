@@ -31,5 +31,38 @@
     "expected_action": "create_ticket",
     "approval_required": false,
     "expected_tool_sequence": ["lookup_customer", "create_ticket"]
+  },
+  {
+    "case_id": "triage-004",
+    "title": "Performance degradation investigation",
+    "customer_tier": "pro",
+    "message": "Several users are reporting slower page loads over the past day. Not all accounts are affected.",
+    "expected_severity": "low",
+    "expected_queue": "general-support",
+    "expected_action": "create_ticket",
+    "approval_required": false,
+    "expected_tool_sequence": ["lookup_customer", "create_ticket"]
+  },
+  {
+    "case_id": "triage-005",
+    "title": "Repeat billing refund request",
+    "customer_tier": "pro",
+    "message": "We submitted a refund request last month for an incorrect charge but received no response. We are requesting the refund again.",
+    "expected_severity": "medium",
+    "expected_queue": "billing-operations",
+    "expected_action": "issue_refund",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "issue_refund"]
+  },
+  {
+    "case_id": "triage-006",
+    "title": "Multi-impact incident with billing dispute",
+    "customer_tier": "enterprise",
+    "message": "User accounts are blocked across our regional nodes following a service outage. We also need a refund for the downtime billing period.",
+    "expected_severity": "critical",
+    "expected_queue": "incident-response",
+    "expected_action": "escalate_incident",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "escalate_incident"]
   }
 ]

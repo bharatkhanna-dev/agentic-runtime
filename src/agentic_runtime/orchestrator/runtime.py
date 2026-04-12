@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 from agentic_runtime.orchestrator.models import (
     GuardrailDecision,
     NodeResult,
@@ -21,6 +23,7 @@ class AgenticRuntime:
 
     def __init__(self) -> None:
         self._tools: dict[str, ToolSpec] = {}
+        self._run_start: float | None = None
 
     @property
     def tools(self) -> dict[str, ToolSpec]:
@@ -35,10 +38,53 @@ class AgenticRuntime:
             run_state.nodes[node.node_id].status = NodeStatus.READY
 
     def start(self, run_state: RunState) -> RunState:
+        self._run_start = time.perf_counter()
+        run_state.start_time = self._run_start
         run_state.status = RunStatus.RUNNING
         for node_id in run_state.ready_node_ids():
             run_state.nodes[node_id].status = NodeStatus.READY
         return run_state
+
+    def validate_input(self, run_state: RunState) -> "InputGuardrailResult":
+        """Run input validation before the first node executes.
+
+        Records the result as a guardrail event. Invalid inputs (empty objective,
+        oversized payload) transition the run to BLOCKED. Suspicious inputs
+        (injection patterns) are logged with a high risk score but do not halt
+        the run so the legitimate question can still be answered.
+        """
+        from agentic_runtime.guardrails.input_guardrail import InputGuardrail, InputGuardrailResult  # noqa: F401
+
+        result = InputGuardrail().validate(run_state)
+        decision = GuardrailDecision(
+            checkpoint="input_validation",
+            allowed=result.valid,
+            risk_score=result.risk_score,
+            confidence_score=0.95,
+            rationale=result.reason,
+        )
+        self.record_guardrail(run_state, decision)
+        return result
+
+    def check_reasoning(self, run_state: RunState, *, token_budget: int = 500) -> "ReasoningGuardrailResult":
+        """Evaluate whether the run should continue executing.
+
+        Checks step limits, token budgets, and repeated checkpoint denials.
+        Records the result as a guardrail event. Returns a result the caller
+        can inspect to decide whether to dispatch the next node.
+        """
+        from agentic_runtime.guardrails.reasoning_guardrail import ReasoningGuardrail, ReasoningGuardrailResult  # noqa: F401
+
+        result = ReasoningGuardrail(token_budget=token_budget).evaluate(run_state)
+        decision = GuardrailDecision(
+            checkpoint="reasoning_check",
+            allowed=result.should_continue,
+            risk_score=result.risk_score,
+            confidence_score=0.95,
+            rationale=result.reason,
+        )
+        self.record_guardrail(run_state, decision)
+        return result
 
     def record_guardrail(self, run_state: RunState, decision: GuardrailDecision) -> None:
         run_state.guardrail_events.append(decision)
@@ -116,6 +162,12 @@ class AgenticRuntime:
 
         if all(node.status == NodeStatus.COMPLETED for node in run_state.nodes.values()):
             run_state.status = RunStatus.COMPLETED
+            # Use start_time stored on run_state so timing works across runtime instances
+            t0 = self._run_start if self._run_start is not None else run_state.start_time
+            if t0 is not None:
+                run_state.runtime_observations["wall_clock_seconds"] = (
+                    time.perf_counter() - t0
+                )
             return
 
         run_state.status = RunStatus.RUNNING

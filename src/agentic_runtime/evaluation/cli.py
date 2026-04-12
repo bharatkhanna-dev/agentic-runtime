@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -59,24 +60,18 @@ def build_runtime_support_benchmark_inputs(
 
 
 def build_gold_research_predictions() -> dict[str, ResearchPrediction]:
+    """Perfect predictions for every research case derived from the dataset."""
     cases = load_research_cases(_research_dataset_path())
-    return {
-        "research-001": ResearchPrediction(
-            answer="Prompt injection needs runtime policy before tool execution.",
-            retrieved_document_ids=["doc-guardrails", "doc-runtime-policy"],
-            cited_document_ids=["doc-guardrails", "doc-runtime-policy"],
-        ),
-        "research-002": ResearchPrediction(
-            answer="Memory compaction reduces token cost and supports context pruning.",
-            retrieved_document_ids=["doc-memory", "doc-cost"],
-            cited_document_ids=["doc-memory", "doc-cost"],
-        ),
-        "research-003": ResearchPrediction(
-            answer="Typed tool contracts and schema improve runtime reliability.",
-            retrieved_document_ids=["doc-tools", "doc-reliability"],
-            cited_document_ids=["doc-tools", "doc-reliability"],
-        ),
-    }
+    predictions: dict[str, ResearchPrediction] = {}
+    for case in cases:
+        # Construct a minimal answer covering all required keywords.
+        answer = " ".join(case.required_keywords) + " are key considerations for agent reliability."
+        predictions[case.case_id] = ResearchPrediction(
+            answer=answer,
+            retrieved_document_ids=list(case.expected_citation_ids),
+            cited_document_ids=list(case.expected_citation_ids),
+        )
+    return predictions
 
 
 def build_runtime_research_benchmark_inputs(
@@ -134,8 +129,32 @@ def run_pair_b_variant_benchmark(variant: BenchmarkVariant) -> dict[str, object]
 
 
 def main() -> None:
-    result = run_pair_b_runtime_benchmark()
-    print(json.dumps(result, indent=2, sort_keys=True))
+    parser = argparse.ArgumentParser(
+        description="Run Pair B agentic-runtime benchmarks.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    subparsers = parser.add_subparsers(dest="command")
+    subparsers.add_parser(
+        "run-pair-b-runtime",
+        help="Run the guarded runtime benchmark (default).",
+    )
+    subparsers.add_parser(
+        "run-pair-b-variants",
+        help="Run all three variant benchmarks (single_agent, baseline, guarded).",
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "run-pair-b-variants":
+        results = {
+            variant.value: run_pair_b_variant_benchmark(variant)
+            for variant in BenchmarkVariant
+        }
+        print(json.dumps(results, indent=2, sort_keys=True))
+    else:
+        # Default and explicit run-pair-b-runtime
+        result = run_pair_b_runtime_benchmark()
+        print(json.dumps(result, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":

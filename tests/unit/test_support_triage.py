@@ -16,7 +16,7 @@ DATASET_PATH = Path(__file__).resolve().parents[2] / "benchmarks" / "datasets" /
 def test_support_triage_dataset_loads_with_expected_case_count() -> None:
     cases = load_support_triage_cases(DATASET_PATH)
 
-    assert len(cases) == 3
+    assert len(cases) == 6
     assert cases[0].expected_action == "escalate_incident"
 
 
