@@ -69,9 +69,3 @@ The repository contains:
 - Configurable `ARSWeights` for weight-sensitivity analysis
 - Saved result artifacts under `benchmarks/reports/`
 
-## Research Paper
-
-**Guardrails as Runtime Policy: An Orchestration Architecture and Evaluation Framework for Reliable Multi-Agent Systems**  
-Bharat Khanna, Independent Researcher, Phoenix, United States  
-Manuscript under review.
-
