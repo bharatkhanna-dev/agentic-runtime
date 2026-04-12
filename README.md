@@ -1,60 +1,58 @@
 # agentic-runtime
 
-A LangGraph-assisted runtime for production-grade multi-agent systems with orchestration-level guardrails, typed tool contracts, structured run state, and reproducible evaluation.
+A LangGraph-assisted runtime for reliable multi-agent systems. Integrates guardrails as orchestration-level policy checkpoints, with typed tool contracts, explicit run state, and a reproducible evaluation framework.
 
-## Why this exists
+## Core idea
 
-Most agent demos prove that a model can complete a task once. They do not prove that the system can be operated reliably with bounded steps, typed tool usage, risk controls, or repeatable evaluation. This project focuses on that runtime layer.
+Most agent stacks treat safety controls as input/output wrappers. This project embeds guardrail decisions inside the execution graph so that every tool invocation is evaluated against the current run state before it proceeds.
 
-Core thesis:
+> Guardrails should be runtime policy checkpoints, not edge-only filters.
 
-> Guardrails should be integrated into orchestration as runtime policy checkpoints, not treated as edge-only filters.
+## What this implements
 
-## Initial scope
-
-The first release cycle is scoped to two benchmark workloads:
-
-- support triage
-- research and retrieval
-
-The runtime is built on LangGraph where graph execution helps, but the main contribution lives in:
-
-- run-state design
-- guardrail checkpoint placement
-- typed tool boundaries
-- reliability and cost controls
-- benchmark methodology
+- **Orchestrator** — owns RunState, node lifecycle, step limits, retries, and termination
+- **Guardrail layer** — evaluates named checkpoints (`before_tool_call`, action routing, retrieval discipline) and records allow/deny decisions as structured events
+- **Tool registry** — typed ToolSpec entries with explicit permission levels: `allow`, `approval_required`, `deny`
+- **Workload executors** — support triage (approval gating, escalation, tool-order enforcement) and research-and-retrieval (retrieval budgets, citation recall, grounding)
+- **Evaluation harness** — deterministic scorers, Agent Reliability Score (ARS), benchmark runner
 
 ## Repository layout
 
-```text
+```
 src/agentic_runtime/
-  orchestrator/
-  agents/
-  guardrails/
-  memory/
-  tools/
-  evaluation/
-  observability/
-examples/
-  support_triage/
-  research_assistant/
+    orchestrator/       # RunState, AgenticRuntime, models
+    agents/             # support_triage, research_assistant executors
+    evaluation/         # ARS, benchmark_runner, scorers, CLI
 benchmarks/
-  datasets/
-  configs/
-  reports/
+    reports/            # saved JSON benchmark results
 tests/
-  unit/
-  integration/
-  regression/
+    unit/
+    integration/
+examples/
 ```
 
-## Local setup
+## Benchmarks
+
+Three runtime variants evaluated on two workloads (Pair B):
+
+| Variant | Task Success | ARS |
+|---|---:|---:|
+| Single-agent | 0.00 | 0.4395 |
+| Multi-agent baseline | 0.50 | 0.5765 |
+| Multi-agent guarded | 1.00 | 0.8545 |
+
+Run benchmarks:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -e .[dev]
+python -m agentic_runtime.evaluation.cli run-pair-b-runtime
+```
+
+## Tests
+
+```powershell
 pytest
 ```
 
