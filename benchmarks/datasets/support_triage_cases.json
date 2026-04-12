@@ -1,0 +1,35 @@
+[
+  {
+    "case_id": "triage-001",
+    "title": "Enterprise login outage",
+    "customer_tier": "enterprise",
+    "message": "Our admins cannot log in across three regions and employees are blocked from accessing the dashboard.",
+    "expected_severity": "critical",
+    "expected_queue": "incident-response",
+    "expected_action": "escalate_incident",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "escalate_incident"]
+  },
+  {
+    "case_id": "triage-002",
+    "title": "Billing refund request",
+    "customer_tier": "pro",
+    "message": "We were charged twice this month after a failed upgrade. Please refund the duplicate charge.",
+    "expected_severity": "medium",
+    "expected_queue": "billing-operations",
+    "expected_action": "issue_refund",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "issue_refund"]
+  },
+  {
+    "case_id": "triage-003",
+    "title": "Password reset help",
+    "customer_tier": "starter",
+    "message": "I am not receiving the password reset email and need help getting back into my account.",
+    "expected_severity": "low",
+    "expected_queue": "general-support",
+    "expected_action": "create_ticket",
+    "approval_required": false,
+    "expected_tool_sequence": ["lookup_customer", "create_ticket"]
+  }
+]

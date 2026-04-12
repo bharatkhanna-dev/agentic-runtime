@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-runtime"
+version = "0.1.0"
+description = "A LangGraph-assisted runtime for reliable multi-agent systems with integrated guardrails and evaluation."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+  { name = "Bharat Khanna", email = "khanna.bharat@gmail.com" }
+]
+dependencies = [
+  "fastapi>=0.115,<1.0",
+  "langgraph>=0.2.60,<0.4",
+  "opentelemetry-api>=1.30,<2.0",
+  "opentelemetry-sdk>=1.30,<2.0",
+  "pydantic>=2.10,<3.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9.0"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

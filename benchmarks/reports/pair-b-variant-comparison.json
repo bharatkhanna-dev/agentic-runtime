@@ -1,0 +1,89 @@
+{
+  "single_agent": {
+    "workload_count": 2,
+    "support_triage": {
+      "total_cases": 3,
+      "task_success_rate": 0.0,
+      "approval_routing_correctness": 0.3333333333333333,
+      "tool_order_accuracy": 0.0,
+      "guardrail_compliance": 0.3333333333333333,
+      "cost_efficiency": 0.6999999999999998,
+      "latency_score": 0.9,
+      "workload": "support_triage",
+      "ars": 0.375
+    },
+    "research_assistant": {
+      "total_cases": 3,
+      "task_success_rate": 0.0,
+      "mean_keyword_coverage": 0.4444444444444444,
+      "citation_recall": 0.5,
+      "retrieval_budget_respected_rate": 1.0,
+      "guardrail_compliance": 0.75,
+      "cost_efficiency": 0.7200000000000001,
+      "latency_score": 0.9,
+      "workload": "research_assistant",
+      "ars": 0.504
+    },
+    "mean_task_success_rate": 0.0,
+    "mean_ars": 0.4395,
+    "variant": "single_agent"
+  },
+  "multi_agent_baseline": {
+    "workload_count": 2,
+    "support_triage": {
+      "total_cases": 3,
+      "task_success_rate": 0.3333333333333333,
+      "approval_routing_correctness": 0.3333333333333333,
+      "tool_order_accuracy": 1.0,
+      "guardrail_compliance": 0.3333333333333333,
+      "cost_efficiency": 0.55,
+      "latency_score": 0.8000000000000002,
+      "workload": "support_triage",
+      "ars": 0.44666666666666666
+    },
+    "research_assistant": {
+      "total_cases": 3,
+      "task_success_rate": 0.6666666666666666,
+      "mean_keyword_coverage": 1.0,
+      "citation_recall": 1.0,
+      "retrieval_budget_respected_rate": 0.6666666666666666,
+      "guardrail_compliance": 0.8333333333333333,
+      "cost_efficiency": 0.5,
+      "latency_score": 0.82,
+      "workload": "research_assistant",
+      "ars": 0.7063333333333333
+    },
+    "mean_task_success_rate": 0.5,
+    "mean_ars": 0.5765,
+    "variant": "multi_agent_baseline"
+  },
+  "multi_agent_guarded": {
+    "workload_count": 2,
+    "support_triage": {
+      "total_cases": 3,
+      "task_success_rate": 1.0,
+      "approval_routing_correctness": 1.0,
+      "tool_order_accuracy": 1.0,
+      "guardrail_compliance": 1.0,
+      "cost_efficiency": 0.4599999999999996,
+      "latency_score": 0.75,
+      "workload": "support_triage",
+      "ars": 0.8545
+    },
+    "research_assistant": {
+      "total_cases": 3,
+      "task_success_rate": 1.0,
+      "mean_keyword_coverage": 1.0,
+      "citation_recall": 1.0,
+      "retrieval_budget_respected_rate": 1.0,
+      "guardrail_compliance": 1.0,
+      "cost_efficiency": 0.45999999999999996,
+      "latency_score": 0.75,
+      "workload": "research_assistant",
+      "ars": 0.8545
+    },
+    "mean_task_success_rate": 1.0,
+    "mean_ars": 0.8545,
+    "variant": "multi_agent_guarded"
+  }
+}

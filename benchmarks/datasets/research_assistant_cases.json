@@ -1,0 +1,26 @@
+[
+  {
+    "case_id": "research-001",
+    "question": "How should prompt injection risk be handled in agent runtimes?",
+    "required_keywords": ["prompt injection", "runtime policy", "tool execution"],
+    "forbidden_keywords": ["ignore previous instructions"],
+    "expected_citation_ids": ["doc-guardrails", "doc-runtime-policy"],
+    "max_retrieved_documents": 3
+  },
+  {
+    "case_id": "research-002",
+    "question": "Why does memory compaction matter for retrieval-heavy agent workflows?",
+    "required_keywords": ["memory compaction", "token cost", "context pruning"],
+    "forbidden_keywords": ["unbounded transcript"],
+    "expected_citation_ids": ["doc-memory", "doc-cost"],
+    "max_retrieved_documents": 4
+  },
+  {
+    "case_id": "research-003",
+    "question": "What role do typed tool contracts play in production agent systems?",
+    "required_keywords": ["typed tool contracts", "schema", "runtime reliability"],
+    "forbidden_keywords": ["arbitrary tool call"],
+    "expected_citation_ids": ["doc-tools", "doc-reliability"],
+    "max_retrieved_documents": 3
+  }
+]

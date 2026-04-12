@@ -1,0 +1,28 @@
+{
+  "mean_ars": 0.8545,
+  "mean_task_success_rate": 1.0,
+  "research_assistant": {
+    "ars": 0.8545,
+    "citation_recall": 1.0,
+    "cost_efficiency": 0.45999999999999996,
+    "guardrail_compliance": 1.0,
+    "latency_score": 0.75,
+    "mean_keyword_coverage": 1.0,
+    "retrieval_budget_respected_rate": 1.0,
+    "task_success_rate": 1.0,
+    "total_cases": 3,
+    "workload": "research_assistant"
+  },
+  "support_triage": {
+    "approval_routing_correctness": 1.0,
+    "ars": 0.8545,
+    "cost_efficiency": 0.45999999999999996,
+    "guardrail_compliance": 1.0,
+    "latency_score": 0.75,
+    "task_success_rate": 1.0,
+    "tool_order_accuracy": 1.0,
+    "total_cases": 3,
+    "workload": "support_triage"
+  },
+  "workload_count": 2
+}
