@@ -39,6 +39,11 @@ The architecture follows five principles.
 - measurement-first implementation
 
 ### 3.2 Core Components
+
+![Figure 1: agentic-runtime system architecture showing the orchestrator, guardrail layer, tool registry, workload executors, evaluation harness, and shared RunState under the LangGraph execution substrate.](figures/figure1-architecture.png)
+
+**Figure 1.** agentic-runtime system architecture. The Orchestrator (centre) owns RunState and node lifecycle. The Guardrail Layer evaluates policy at named checkpoints and returns allow/deny decisions. The Tool Registry exposes typed ToolSpec entries with explicit permission levels. Workload Executors (Support Triage and Research & Retrieval) dispatch through the Orchestrator and write results to the shared RunState. The Evaluation Harness consumes RunState to compute ARS and per-metric scores.
+
 The runtime is organized around the following components.
 
 Orchestrator. The orchestrator owns the run state, node lifecycle, retries, and termination behavior. It decides when a node becomes ready and when a run becomes blocked, failed, or completed.
@@ -147,6 +152,10 @@ Table 1: Pair B benchmark comparison across runtime variants
 | Multi-agent baseline | 0.5000 | 0.5765 |
 | Multi-agent guarded | 1.0000 | 0.8545 |
 
+![Figure 2: Pair B benchmark – Task Success and ARS by variant.](figures/figure2-ars-comparison.png)
+
+**Figure 2.** Mean Task Success and Mean ARS across the three Pair B runtime variants. The guarded runtime reaches perfect task success (1.0) and an ARS of 0.8545, compared with 0.5 / 0.5765 for the multi-agent baseline and 0.0 / 0.4395 for the single-agent baseline.
+
 The guarded runtime outperforms both weaker baselines on mean task success and mean ARS. The difference between the multi-agent baseline and the guarded runtime is particularly important because both share a graph-oriented structure; the main distinction is the presence of orchestration-level policy enforcement.
 
 ### 7.2 Support Triage Results
@@ -176,6 +185,11 @@ Table 3: Research-and-retrieval workload results
 The retrieval workload shows a different but complementary pattern. The baseline already reaches full citation recall, but it violates retrieval budgets more often. The guarded runtime restores retrieval-budget compliance to 1.0 while preserving perfect citation recall and task success. This is the strongest evidence that the runtime is not merely solving support triage-specific policy problems.
 
 ### 7.4 Cross-Workload Interpretation
+
+![Figure 3: Per-workload metric breakdown by runtime variant for Support Triage and Research & Retrieval.](figures/figure3-workload-breakdown.png)
+
+**Figure 3.** Per-workload metric breakdown across all three variants. Left panel shows Support Triage; right panel shows Research & Retrieval. The guarded variant (green) achieves the highest scores on task success, approval routing, and retrieval budget, while accepting a measurable cost-efficiency and latency trade-off relative to the weaker baselines.
+
 Two findings matter most.
 
 First, the guarded runtime transfers across both workload families. It is not only an operational-policy system for support triage. It also improves reliability and context discipline in retrieval-heavy tasks.
