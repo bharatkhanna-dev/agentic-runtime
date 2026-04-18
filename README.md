@@ -44,17 +44,17 @@ Three runtime variants evaluated on two workloads (Pair B), six cases each:
 
 Run benchmarks:
 
-```powershell
+```bash
 python -m venv .venv
-.\.venv\Scripts\activate
-pip install -e .[dev]
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -e ".[dev]"
 python -m agentic_runtime.evaluation.cli run-pair-b-runtime
 python -m agentic_runtime.evaluation.cli run-pair-b-variants
 ```
 
 ## Tests
 
-```powershell
+```bash
 pytest
 ```
 
