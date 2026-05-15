@@ -1,0 +1,108 @@
+{
+  "artifact": {
+    "generated_at_utc": "2026-05-15T05:10:22+00:00",
+    "git_commit": "1d43e9d46e225e4eb14a8fa7b2b31704b121614e",
+    "name": "agentic-runtime",
+    "version": "0.1.0"
+  },
+  "benchmark": {
+    "commands": [
+      "python -m agentic_runtime.evaluation.cli run-pair-b-runtime",
+      "python -m agentic_runtime.evaluation.cli run-pair-b-variants",
+      "python -m agentic_runtime.evaluation.cli run-pair-b-ablations"
+    ],
+    "name": "Pair B",
+    "optional_live_baseline": {
+      "command": "python -m agentic_runtime.evaluation.cli run-support-triage-live-openai --model gpt-5",
+      "requires_env": [
+        "OPENAI_API_KEY"
+      ],
+      "status": "not_included_in_saved_artifact"
+    },
+    "workloads": {
+      "research_assistant_cases": 15,
+      "support_triage_cases": 15
+    }
+  },
+  "benchmark_summary": {
+    "ablations": {
+      "action_authorization_off": {
+        "mean_ars": 0.6378333333333334,
+        "mean_task_success_rate": 0.6666666666666666
+      },
+      "full_guardrails": {
+        "mean_ars": 0.8545,
+        "mean_task_success_rate": 1.0
+      },
+      "input_validation_off": {
+        "mean_ars": 0.8311666666666667,
+        "mean_task_success_rate": 0.9333333333333333
+      },
+      "reasoning_check_off": {
+        "mean_ars": 0.8045,
+        "mean_task_success_rate": 0.9
+      }
+    },
+    "variants": {
+      "multi_agent_baseline": {
+        "mean_ars": 0.5581666666666667,
+        "mean_task_success_rate": 0.43333333333333335
+      },
+      "multi_agent_guarded": {
+        "mean_ars": 0.8545,
+        "mean_task_success_rate": 1.0
+      },
+      "single_agent": {
+        "mean_ars": 0.442,
+        "mean_task_success_rate": 0.0
+      }
+    }
+  },
+  "environment": {
+    "platform": "Linux-6.12.85+deb13-amd64-x86_64-with-glibc2.41",
+    "python_version": "3.13.5"
+  },
+  "saved_files": {
+    "datasets": [
+      {
+        "path": "benchmarks/datasets/research_assistant_cases.json",
+        "sha256": "b63c5a3bc480a9af6057170e8ceaf6a8423e6d2bf8c959e627ee6b060b58ab11",
+        "size_bytes": 5821
+      },
+      {
+        "path": "benchmarks/datasets/support_triage_cases.json",
+        "sha256": "f433b62b6a189030eccd9d59c8ecd2b05a0ffc53c3c1357c3fd1f64a2e5a2cc4",
+        "size_bytes": 6844
+      }
+    ],
+    "reports": [
+      {
+        "path": "benchmarks/reports/pair-b-runtime-baseline.json",
+        "sha256": "eca618e7e425404ca7c8618234b1a2981f8647fd06cfa190e9855615bdfecaf7",
+        "size_bytes": 818
+      },
+      {
+        "path": "benchmarks/reports/pair-b-variant-comparison.json",
+        "sha256": "219fdd633e11f95d43216a890d3a7e7ab54c336701602a43d51ac5140b8b641d",
+        "size_bytes": 2965
+      },
+      {
+        "path": "benchmarks/reports/pair-b-ablation-comparison.json",
+        "sha256": "2c74a4091aaedf25bb2074f715cb8da7c08624ccedc34ea0b7aeb1866643884d",
+        "size_bytes": 3785
+      }
+    ],
+    "supporting_files": [
+      {
+        "path": "README.md",
+        "sha256": "9ef282b40600e8f3c8b3ce22d195c6542a9b8c77233e816c28a1a38668efea63",
+        "size_bytes": 3728
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "d5fcd87faecffb4a77164fabd8e16a9ef2561647d4374fed5a298aa81f98adc0",
+        "size_bytes": 788
+      }
+    ]
+  }
+}
