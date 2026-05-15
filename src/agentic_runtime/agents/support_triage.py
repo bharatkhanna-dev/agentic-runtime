@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from agentic_runtime.evaluation.guardrail_profiles import FULL_GUARDRAIL_PROFILE, GuardrailProfile
 from agentic_runtime.evaluation.support_triage import SupportTriageCase, SupportTriagePrediction
 from agentic_runtime.evaluation.variants import BenchmarkVariant
 from agentic_runtime.orchestrator.models import NodeResult, NodeStatus, RunState, RuntimeNode, ToolPermission, ToolSpec
@@ -91,6 +92,7 @@ def execute_support_triage_case(
     *,
     approval_granted: bool = False,
     variant: BenchmarkVariant = BenchmarkVariant.MULTI_AGENT_GUARDED,
+    guardrail_profile: GuardrailProfile = FULL_GUARDRAIL_PROFILE,
 ) -> tuple[SupportTriagePrediction, RunState]:
     runtime = AgenticRuntime()
     for tool in default_support_triage_tools():
@@ -98,9 +100,12 @@ def execute_support_triage_case(
 
     run_state = build_support_triage_run_state(run_id=case.case_id, objective=case.title)
 
+    if variant == BenchmarkVariant.MULTI_AGENT_GUARDED and guardrail_profile.validate_input:
+        runtime.validate_input(run_state)
+
     tool_sequence: list[str] = []
     if variant != BenchmarkVariant.SINGLE_AGENT:
-        if variant == BenchmarkVariant.MULTI_AGENT_GUARDED:
+        if variant == BenchmarkVariant.MULTI_AGENT_GUARDED and guardrail_profile.authorize_tools:
             lookup_allowed = runtime.evaluate_tool_call(
                 run_state,
                 tool_name="lookup_customer",
@@ -133,11 +138,14 @@ def execute_support_triage_case(
         ),
     )
 
+    if variant == BenchmarkVariant.MULTI_AGENT_GUARDED and guardrail_profile.reasoning_check:
+        runtime.check_reasoning(run_state)
+
     effective_approval = approval_granted
-    if variant != BenchmarkVariant.MULTI_AGENT_GUARDED:
+    if variant != BenchmarkVariant.MULTI_AGENT_GUARDED or not guardrail_profile.authorize_tools:
         effective_approval = True
 
-    if variant == BenchmarkVariant.MULTI_AGENT_GUARDED:
+    if variant == BenchmarkVariant.MULTI_AGENT_GUARDED and guardrail_profile.authorize_tools:
         action_allowed = evaluate_support_triage_action(
             runtime,
             run_state,
@@ -147,7 +155,11 @@ def execute_support_triage_case(
     else:
         action_allowed = True
 
-    approval_requested = approval_requested if variant == BenchmarkVariant.MULTI_AGENT_GUARDED else False
+    approval_requested = (
+        approval_requested
+        if variant == BenchmarkVariant.MULTI_AGENT_GUARDED and guardrail_profile.authorize_tools
+        else False
+    )
     tool_sequence.append(action)
 
     finalize_status = NodeStatus.COMPLETED if action_allowed or approval_requested else NodeStatus.FAILED

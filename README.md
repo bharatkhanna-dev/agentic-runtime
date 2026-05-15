@@ -34,12 +34,12 @@ tests/
 
 ## Benchmarks
 
-Three runtime variants evaluated on two workloads (Pair B), six cases each:
+Three runtime variants evaluated on two workloads (Pair B), fifteen cases each:
 
 | Variant | Task Success | ARS |
 |---|---:|---:|
-| Single-agent | 0.00 | 0.4458 |
-| Multi-agent baseline | 0.42 | 0.5473 |
+| Single-agent | 0.00 | 0.4420 |
+| Multi-agent baseline | 0.43 | 0.5582 |
 | Multi-agent guarded | 1.00 | 0.8545 |
 
 Run benchmarks:
@@ -50,6 +50,15 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 python -m agentic_runtime.evaluation.cli run-pair-b-runtime
 python -m agentic_runtime.evaluation.cli run-pair-b-variants
+python -m agentic_runtime.evaluation.cli run-pair-b-ablations
+python -m agentic_runtime.evaluation.cli write-artifact-manifest
+```
+
+Optional live baseline for support triage using the OpenAI Responses API:
+
+```bash
+export OPENAI_API_KEY=...
+python -m agentic_runtime.evaluation.cli run-support-triage-live-openai --model gpt-5
 ```
 
 ## Tests
@@ -58,12 +67,23 @@ python -m agentic_runtime.evaluation.cli run-pair-b-variants
 pytest
 ```
 
+## Artifact Freeze Surface
+
+For a reviewable snapshot, generate the manifest below after regenerating the saved benchmark reports:
+
+```bash
+python -m agentic_runtime.evaluation.cli write-artifact-manifest
+```
+
+This writes `benchmarks/reports/artifact-manifest.json`, which records the current package version, git commit when available, benchmark commands, and SHA-256 hashes for the saved report and dataset files.
+
 ## Status
 
 The repository contains:
 
-- Runtime-backed Pair B benchmark workloads (6 cases per workload including adversarial cases)
+- Runtime-backed Pair B benchmark workloads (15 cases per workload including adversarial cases)
 - Benchmark variant comparisons across `single_agent`, `multi_agent_baseline`, and `multi_agent_guarded`
+- Guardrail ablation comparisons for `input_validation_off`, `reasoning_check_off`, and `action_authorization_off`
 - `InputGuardrail` and `ReasoningGuardrail` classes for pre-execution and mid-run policy enforcement
 - Wall-clock timing and token-count instrumentation in `RunState`
 - Configurable `ARSWeights` for weight-sensitivity analysis

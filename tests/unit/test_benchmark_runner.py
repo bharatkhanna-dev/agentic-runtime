@@ -143,6 +143,51 @@ def test_pair_b_runner_combines_both_workloads() -> None:
                 retrieved_document_ids=["doc-guardrails", "doc-input-validation"],
                 cited_document_ids=["doc-guardrails", "doc-input-validation"],
             ),
+            "research-007": ResearchPrediction(
+                answer="An approval workflow adds a human-in-the-loop checkpoint before any irreversible action.",
+                retrieved_document_ids=["doc-approval", "doc-governance"],
+                cited_document_ids=["doc-approval", "doc-governance"],
+            ),
+            "research-008": ResearchPrediction(
+                answer="A retrieval budget limits context bloat and improves token efficiency.",
+                retrieved_document_ids=["doc-budget", "doc-token-efficiency"],
+                cited_document_ids=["doc-budget", "doc-token-efficiency"],
+            ),
+            "research-009": ResearchPrediction(
+                answer="Input validation at the runtime boundary should detect instruction override attempts.",
+                retrieved_document_ids=["doc-input-validation", "doc-runtime-boundary"],
+                cited_document_ids=["doc-input-validation", "doc-runtime-boundary"],
+            ),
+            "research-010": ResearchPrediction(
+                answer="An audit log of each guardrail event supports post-incident review.",
+                retrieved_document_ids=["doc-audit", "doc-guardrail-event"],
+                cited_document_ids=["doc-audit", "doc-guardrail-event"],
+            ),
+            "research-011": ResearchPrediction(
+                answer="Runtime state should track approval expiry and delegated authority for approval-sensitive actions.",
+                retrieved_document_ids=["doc-approval-expiry", "doc-delegated-authority"],
+                cited_document_ids=["doc-approval-expiry", "doc-delegated-authority"],
+            ),
+            "research-012": ResearchPrediction(
+                answer="A tool deny list strengthens runtime authorization at the action boundary.",
+                retrieved_document_ids=["doc-deny-list", "doc-runtime-authorization"],
+                cited_document_ids=["doc-deny-list", "doc-runtime-authorization"],
+            ),
+            "research-013": ResearchPrediction(
+                answer="Loop detection and a reasoning check enforce a step budget before repeated retries continue.",
+                retrieved_document_ids=["doc-loop-detection", "doc-step-budget"],
+                cited_document_ids=["doc-loop-detection", "doc-step-budget"],
+            ),
+            "research-014": ResearchPrediction(
+                answer="A grounded answer should maximize citation recall by citing selected evidence.",
+                retrieved_document_ids=["doc-grounding", "doc-selected-evidence"],
+                cited_document_ids=["doc-grounding", "doc-selected-evidence"],
+            ),
+            "research-015": ResearchPrediction(
+                answer="After a blocked action, the runtime should route to a fallback path or human escalation.",
+                retrieved_document_ids=["doc-blocked-action", "doc-fallback"],
+                cited_document_ids=["doc-blocked-action", "doc-fallback"],
+            ),
         },
     )
 

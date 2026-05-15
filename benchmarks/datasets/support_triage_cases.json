@@ -64,5 +64,104 @@
     "expected_action": "escalate_incident",
     "approval_required": true,
     "expected_tool_sequence": ["lookup_customer", "escalate_incident"]
+  },
+  {
+    "case_id": "triage-007",
+    "title": "Regional SSO outage escalation",
+    "customer_tier": "enterprise",
+    "message": "Our single sign-on service is down after an outage and administrators are blocked from accessing all regional tenants.",
+    "expected_severity": "critical",
+    "expected_queue": "incident-response",
+    "expected_action": "escalate_incident",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "escalate_incident"]
+  },
+  {
+    "case_id": "triage-008",
+    "title": "Duplicate annual invoice refund",
+    "customer_tier": "pro",
+    "message": "We were charged twice on the annual invoice and need a refund for the duplicate charge.",
+    "expected_severity": "medium",
+    "expected_queue": "billing-operations",
+    "expected_action": "issue_refund",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "issue_refund"]
+  },
+  {
+    "case_id": "triage-009",
+    "title": "Two-factor device reset request",
+    "customer_tier": "starter",
+    "message": "A user replaced their phone and needs help resetting the two-factor authentication device on the account.",
+    "expected_severity": "low",
+    "expected_queue": "general-support",
+    "expected_action": "create_ticket",
+    "approval_required": false,
+    "expected_tool_sequence": ["lookup_customer", "create_ticket"]
+  },
+  {
+    "case_id": "triage-010",
+    "title": "Intermittent export slowdown",
+    "customer_tier": "pro",
+    "message": "Scheduled report exports have slower page loads and delays, but the service remains available.",
+    "expected_severity": "low",
+    "expected_queue": "general-support",
+    "expected_action": "create_ticket",
+    "approval_required": false,
+    "expected_tool_sequence": ["lookup_customer", "create_ticket"]
+  },
+  {
+    "case_id": "triage-011",
+    "title": "Cross-region admin lockout",
+    "customer_tier": "enterprise",
+    "message": "Administrators are blocked from accessing the control plane across multiple regions after this morning's outage.",
+    "expected_severity": "critical",
+    "expected_queue": "incident-response",
+    "expected_action": "escalate_incident",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "escalate_incident"]
+  },
+  {
+    "case_id": "triage-012",
+    "title": "Fraudulent duplicate monthly invoice",
+    "customer_tier": "pro",
+    "message": "We were charged twice on the monthly invoice and need a refund for the duplicate charge after the failed downgrade.",
+    "expected_severity": "medium",
+    "expected_queue": "billing-operations",
+    "expected_action": "issue_refund",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "issue_refund"]
+  },
+  {
+    "case_id": "triage-013",
+    "title": "Analytics dashboard slowdown",
+    "customer_tier": "starter",
+    "message": "The analytics dashboard has slower page loads for one team, but the service remains available.",
+    "expected_severity": "low",
+    "expected_queue": "general-support",
+    "expected_action": "create_ticket",
+    "approval_required": false,
+    "expected_tool_sequence": ["lookup_customer", "create_ticket"]
+  },
+  {
+    "case_id": "triage-014",
+    "title": "Annual contract refund dispute",
+    "customer_tier": "enterprise",
+    "message": "We were charged twice for the annual contract renewal and require a refund for the duplicate charge.",
+    "expected_severity": "medium",
+    "expected_queue": "billing-operations",
+    "expected_action": "issue_refund",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "issue_refund"]
+  },
+  {
+    "case_id": "triage-015",
+    "title": "Regional SAML outage follow-up",
+    "customer_tier": "enterprise",
+    "message": "Another outage has blocked SAML administrators from signing in across our regional tenants.",
+    "expected_severity": "critical",
+    "expected_queue": "incident-response",
+    "expected_action": "escalate_incident",
+    "approval_required": true,
+    "expected_tool_sequence": ["lookup_customer", "escalate_incident"]
   }
 ]

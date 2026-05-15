@@ -6,7 +6,10 @@ from pathlib import Path
 
 from agentic_runtime.agents.research_assistant import execute_research_case
 from agentic_runtime.agents.support_triage import execute_support_triage_case
+from agentic_runtime.evaluation.artifact_manifest import write_artifact_manifest
 from agentic_runtime.evaluation.benchmark_runner import run_pair_b_benchmarks
+from agentic_runtime.evaluation.guardrail_profiles import ABLATION_PROFILES, FULL_GUARDRAIL_PROFILE, GuardrailProfile
+from agentic_runtime.evaluation.live_baseline import run_support_triage_live_openai_benchmark
 from agentic_runtime.evaluation.research_assistant import ResearchPrediction, load_research_cases
 from agentic_runtime.evaluation.support_triage import SupportTriagePrediction, load_support_triage_cases
 from agentic_runtime.evaluation.variants import BenchmarkVariant
@@ -39,6 +42,7 @@ def build_gold_support_predictions() -> dict[str, SupportTriagePrediction]:
 
 def build_runtime_support_benchmark_inputs(
     variant: BenchmarkVariant = BenchmarkVariant.MULTI_AGENT_GUARDED,
+    guardrail_profile: GuardrailProfile = FULL_GUARDRAIL_PROFILE,
 ) -> tuple[dict[str, SupportTriagePrediction], dict[str, float]]:
     predictions: dict[str, SupportTriagePrediction] = {}
     total_cost_efficiency = 0.0
@@ -46,7 +50,12 @@ def build_runtime_support_benchmark_inputs(
     cases = load_support_triage_cases(_support_dataset_path())
 
     for case in cases:
-        prediction, run_state = execute_support_triage_case(case, approval_granted=False, variant=variant)
+        prediction, run_state = execute_support_triage_case(
+            case,
+            approval_granted=False,
+            variant=variant,
+            guardrail_profile=guardrail_profile,
+        )
         predictions[case.case_id] = prediction
         total_cost_efficiency += run_state.runtime_observations.get("cost_efficiency", 1.0)
         total_latency_score += run_state.runtime_observations.get("latency_score", 1.0)
@@ -76,6 +85,7 @@ def build_gold_research_predictions() -> dict[str, ResearchPrediction]:
 
 def build_runtime_research_benchmark_inputs(
     variant: BenchmarkVariant = BenchmarkVariant.MULTI_AGENT_GUARDED,
+    guardrail_profile: GuardrailProfile = FULL_GUARDRAIL_PROFILE,
 ) -> tuple[dict[str, ResearchPrediction], dict[str, float]]:
     predictions: dict[str, ResearchPrediction] = {}
     total_cost_efficiency = 0.0
@@ -83,7 +93,11 @@ def build_runtime_research_benchmark_inputs(
     cases = load_research_cases(_research_dataset_path())
 
     for case in cases:
-        prediction, run_state = execute_research_case(case, variant=variant)
+        prediction, run_state = execute_research_case(
+            case,
+            variant=variant,
+            guardrail_profile=guardrail_profile,
+        )
         predictions[case.case_id] = prediction
         total_cost_efficiency += run_state.runtime_observations.get("cost_efficiency", 1.0)
         total_latency_score += run_state.runtime_observations.get("latency_score", 1.0)
@@ -112,10 +126,24 @@ def run_pair_b_runtime_benchmark() -> dict[str, object]:
 
 
 def run_pair_b_variant_benchmark(variant: BenchmarkVariant) -> dict[str, object]:
+    return run_pair_b_guardrail_profile_benchmark(FULL_GUARDRAIL_PROFILE, variant=variant)
+
+
+def run_pair_b_guardrail_profile_benchmark(
+    guardrail_profile: GuardrailProfile,
+    *,
+    variant: BenchmarkVariant = BenchmarkVariant.MULTI_AGENT_GUARDED,
+) -> dict[str, object]:
     support_cases = load_support_triage_cases(_support_dataset_path())
     research_cases = load_research_cases(_research_dataset_path())
-    support_predictions, support_observations = build_runtime_support_benchmark_inputs(variant)
-    research_predictions, research_observations = build_runtime_research_benchmark_inputs(variant)
+    support_predictions, support_observations = build_runtime_support_benchmark_inputs(
+        variant,
+        guardrail_profile=guardrail_profile,
+    )
+    research_predictions, research_observations = build_runtime_research_benchmark_inputs(
+        variant,
+        guardrail_profile=guardrail_profile,
+    )
     result = run_pair_b_benchmarks(
         support_cases=support_cases,
         support_predictions=support_predictions,
@@ -125,7 +153,15 @@ def run_pair_b_variant_benchmark(variant: BenchmarkVariant) -> dict[str, object]
         research_runtime_observations=research_observations,
     )
     result["variant"] = variant.value
+    result["guardrail_profile"] = guardrail_profile.name
     return result
+
+
+def run_pair_b_ablation_benchmarks() -> dict[str, object]:
+    return {
+        profile.name: run_pair_b_guardrail_profile_benchmark(profile)
+        for profile in ABLATION_PROFILES
+    }
 
 
 def main() -> None:
@@ -142,6 +178,24 @@ def main() -> None:
         "run-pair-b-variants",
         help="Run all three variant benchmarks (single_agent, baseline, guarded).",
     )
+    subparsers.add_parser(
+        "run-pair-b-ablations",
+        help="Run guarded-runtime ablations with input, reasoning, and action guardrails toggled.",
+    )
+    manifest = subparsers.add_parser(
+        "write-artifact-manifest",
+        help="Write a reproducibility manifest for the saved benchmark artifact files.",
+    )
+    manifest.add_argument(
+        "--output",
+        default=None,
+        help="Optional output path for the manifest JSON file.",
+    )
+    live_support = subparsers.add_parser(
+        "run-support-triage-live-openai",
+        help="Run the support-triage benchmark against a live OpenAI Responses API baseline.",
+    )
+    live_support.add_argument("--model", default="gpt-5", help="OpenAI model name for the live baseline.")
 
     args = parser.parse_args()
 
@@ -151,6 +205,14 @@ def main() -> None:
             for variant in BenchmarkVariant
         }
         print(json.dumps(results, indent=2, sort_keys=True))
+    elif args.command == "run-pair-b-ablations":
+        print(json.dumps(run_pair_b_ablation_benchmarks(), indent=2, sort_keys=True))
+    elif args.command == "write-artifact-manifest":
+        output_path = Path(args.output).expanduser() if args.output else None
+        manifest_path = write_artifact_manifest(output_path=output_path)
+        print(json.dumps({"manifest_path": str(manifest_path)}, indent=2, sort_keys=True))
+    elif args.command == "run-support-triage-live-openai":
+        print(json.dumps(run_support_triage_live_openai_benchmark(model=args.model), indent=2, sort_keys=True))
     else:
         # Default and explicit run-pair-b-runtime
         result = run_pair_b_runtime_benchmark()
