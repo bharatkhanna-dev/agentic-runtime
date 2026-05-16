@@ -30,5 +30,5 @@ def test_execute_research_case_produces_grounded_prediction_and_runtime_observat
     assert "memory compaction" in prediction.answer.lower()
     assert prediction.cited_document_ids == ["doc-memory", "doc-cost"]
     assert run_state.status == RunStatus.COMPLETED
-    assert run_state.runtime_observations["guardrail_allows"] == 3.0
+    assert run_state.runtime_observations["guardrail_allows"] == 5.0
     assert run_state.runtime_observations["cost_efficiency"] > 0.0

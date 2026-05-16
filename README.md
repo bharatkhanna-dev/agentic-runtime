@@ -25,12 +25,15 @@ src/agentic_runtime/
     guardrails/         # InputGuardrail, ReasoningGuardrail
     evaluation/         # ARS, benchmark_runner, scorers, CLI
 benchmarks/
+    workloads/          # workload notes for support_triage and research_assistant
     datasets/           # support_triage_cases.json, research_assistant_cases.json
+    configs/            # benchmark configuration notes
     reports/            # saved JSON benchmark results
 tests/
     unit/
-    integration/
 ```
+
+The repository intentionally keeps runnable code under `src/`, benchmark assets under `benchmarks/`, and tests under `tests/`. Workload notes live under `benchmarks/workloads/` because they describe benchmark surfaces rather than executable example apps.
 
 ## Benchmarks
 
