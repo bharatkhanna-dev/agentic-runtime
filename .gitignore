@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+
+.pytest_cache/
+.venv/
+
+*.egg-info/
+
+benchmarks/reports/*.stderr.log
+benchmarks/reports/support-triage-live-openai*.json
