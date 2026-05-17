@@ -1,10 +1,10 @@
 # agentic-runtime
 
-A LangGraph-assisted runtime for reliable multi-agent systems. Integrates guardrails as orchestration-level policy checkpoints, with typed tool contracts, explicit run state, and a reproducible evaluation framework.
+A lightweight runtime for reliable multi-agent systems. It integrates guardrails as orchestration-level policy checkpoints, with typed tool contracts, explicit run state, and a reproducible evaluation framework.
 
 ## Core idea
 
-Most agent stacks treat safety controls as input/output wrappers. This project embeds guardrail decisions inside the execution graph so that every tool invocation is evaluated against the current run state before it proceeds.
+Most agent stacks treat safety controls as input/output wrappers. This project embeds guardrail decisions inside the execution flow so that every tool invocation is evaluated against the current run state before it proceeds.
 
 > Guardrails should be runtime policy checkpoints, not edge-only filters.
 
@@ -45,17 +45,37 @@ Three runtime variants evaluated on two workloads (Pair B), fifteen cases each:
 | Multi-agent baseline | 0.43 | 0.5582 |
 | Multi-agent guarded | 1.00 | 0.8545 |
 
-Run benchmarks:
+Requirements:
+
+- Python 3.12 or newer
+- A POSIX shell such as `bash` or `zsh` on Linux or macOS
+
+Platform notes:
+
+- macOS: make sure `python3` resolves to Python 3.12+.
+- Debian/Ubuntu Linux: if `python3 -m venv .venv` fails with `ensurepip is not available`, install the matching `python3.x-venv` package first (for example, `python3.13-venv`).
+
+Run benchmarks on Linux or macOS:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 python -m agentic_runtime.evaluation.cli run-pair-b-runtime
 python -m agentic_runtime.evaluation.cli run-pair-b-variants
 python -m agentic_runtime.evaluation.cli run-pair-b-ablations
 python -m agentic_runtime.evaluation.cli write-artifact-manifest
 ```
+
+After activation, `python` refers to the virtual environment interpreter on both Linux and macOS.
+
+Expected outputs:
+
+- `run-pair-b-runtime` prints a JSON object with `variant: "multi_agent_guarded"`, `mean_task_success_rate: 1.0`, and `mean_ars: 0.8545`.
+- `run-pair-b-variants` prints JSON for `single_agent`, `multi_agent_baseline`, and `multi_agent_guarded`.
+- `run-pair-b-ablations` prints JSON for `full_guardrails`, `input_validation_off`, `reasoning_check_off`, and `action_authorization_off`.
+- The checked-in reference outputs for these commands live under `benchmarks/reports/` and can be compared directly against a fresh run.
 
 Optional live baseline for support triage using the OpenAI Responses API:
 
@@ -67,7 +87,7 @@ python -m agentic_runtime.evaluation.cli run-support-triage-live-openai --model 
 ## Tests
 
 ```bash
-pytest
+python -m pytest
 ```
 
 ## Artifact Freeze Surface

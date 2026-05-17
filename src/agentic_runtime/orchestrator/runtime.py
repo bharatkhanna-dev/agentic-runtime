@@ -17,8 +17,8 @@ from agentic_runtime.orchestrator.models import (
 class AgenticRuntime:
     """Small orchestration shell around structured run state.
 
-    This intentionally keeps graph execution lightweight at scaffold stage.
-    LangGraph integration will plug into this state model rather than replace it.
+    This intentionally keeps execution lightweight and framework-agnostic.
+    More elaborate graph orchestration can plug into this state model rather than replace it.
     """
 
     def __init__(self) -> None:
